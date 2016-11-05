@@ -7,7 +7,7 @@ import matplotlib.pylab as plt
 
 L=70
 N=L**2
-T=3
+T=1
 beta=1/T
 p=1-math.exp(-2*beta)
 
@@ -98,7 +98,7 @@ energies=[]
 energie=energy(conf)
 m=magnetization(conf)
 ms=[]
-while t<10:
+while t<30:
     times.append(t)
     energies.append(energie)
     ms.append(m)    
@@ -112,18 +112,20 @@ while t<10:
     t=t+np.size(cluster)/N#increase time    
     i=i+1    
     print(t)
-    plt.figure(2)
-    plt.imshow(conf, cmap = 'Blues', interpolation='nearest')#show the system. Takes a lot of time.
-    plt.pause(0.000001) 
+    #plt.figure(2)
+    #plt.imshow(conf, cmap = 'Blues', interpolation='nearest')#show the system. Takes a lot of time.
+    #plt.pause(0.000001) 
 
-
-
+for i in range(np.size(ms)):
+    ms[i]=np.abs(ms[i])/N
+for i in range(np.size(energies)):
+    energies[i]=(energies[i])/N
 plt.figure(3)
 plt.plot(times,energies)
 plt.xlabel('t')
-plt.ylabel('energy')
+plt.ylabel('energy per spin')
 plt.figure(4)
 plt.plot(times,ms)
 plt.xlabel('t')
-plt.ylabel('magnetization')
+plt.ylabel('magnetization per spin')
 plt.show()
