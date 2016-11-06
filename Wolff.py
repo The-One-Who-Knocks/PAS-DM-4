@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Nov  3 18:56:22 2016
+
+@author: vincent
+"""
 import os
 import sys
 import numpy as np
@@ -7,7 +13,7 @@ import matplotlib.pylab as plt
 
 L=70
 N=L**2
-T=1
+T=5
 beta=1/T
 p=1-math.exp(-2*beta)
 
@@ -20,8 +26,9 @@ def magnetization(conf):#sum of the spins
     return m
 
 def magnetization_delta(cluster):#computes the magnetization variation of the system when flipping the cluster
-    k=cluster[0]    
-    return conf[k[0],k[1]]*np.size(cluster)
+    k=cluster[0] 
+    cluster=np.array(cluster)
+    return conf[cluster[0,0],cluster[0,1]]*np.size(cluster)
 
 def energy(conf):#eenrgy of the system for a given configuration
     e=0
@@ -43,7 +50,7 @@ def ini_conf(L):#generates a configuration
             if (random.random()<0.5): 
                 conf[i][j]=1
             else: 
-                conf[i][j]=-1
+                conf[i][j]=1#set 1 for ordered system
     return conf
 
 def neighbours(conf,seed_site):#returns the neighbours of a seed_spin if they are identical to the seed_spin
@@ -106,7 +113,7 @@ while t<30:
     cluster=cluster_construction(conf,seed_site)#construct a cluster arround this spin
     delt=energy_delta(conf,cluster)#compute the energy variation of the flip
     energie=energie+delt
-    m=m+magnetization_delta(cluster)#compute the magnetization variation of the flip    
+    m=m-magnetization_delta(cluster)#compute the magnetization variation of the flip    
     for l in cluster:#Do the flip
         conf[l[0],l[1]]=-conf[l[0],l[1]]
     t=t+np.size(cluster)/N#increase time    
@@ -120,6 +127,7 @@ for i in range(np.size(ms)):
     ms[i]=np.abs(ms[i])/N
 for i in range(np.size(energies)):
     energies[i]=(energies[i])/N
+    
 plt.figure(3)
 plt.plot(times,energies)
 plt.xlabel('t')
