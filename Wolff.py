@@ -13,7 +13,7 @@ import matplotlib.pylab as plt
 
 L=70
 N=L**2
-T=5
+T=100
 beta=1/T
 p=1-math.exp(-2*beta)
 
@@ -50,7 +50,7 @@ def ini_conf(L):#generates a configuration
             if (random.random()<0.5): 
                 conf[i][j]=1
             else: 
-                conf[i][j]=1#set 1 for ordered system
+                conf[i][j]=-1#set 1 for ordered system
     return conf
 
 def neighbours(conf,seed_site):#returns the neighbours of a seed_spin if they are identical to the seed_spin
@@ -105,7 +105,7 @@ energies=[]
 energie=energy(conf)
 m=magnetization(conf)
 ms=[]
-while t<30:
+while t<100:
     times.append(t)
     energies.append(energie)
     ms.append(m)    
@@ -117,17 +117,27 @@ while t<30:
     for l in cluster:#Do the flip
         conf[l[0],l[1]]=-conf[l[0],l[1]]
     t=t+np.size(cluster)/N#increase time    
-    i=i+1    
+    i=i+1
     print(t)
     #plt.figure(2)
     #plt.imshow(conf, cmap = 'Blues', interpolation='nearest')#show the system. Takes a lot of time.
     #plt.pause(0.000001) 
-
+m4s=[]
+m2s=[]
+m2=0
+m4=0
 for i in range(np.size(ms)):
     ms[i]=np.abs(ms[i])/N
+    m4s.append((np.abs(ms[i]))**4)
+    m4=m4+m4s[i]
+    m2s.append((np.abs(ms[i]))**2)
+    m2=m2+m2s[i]    
+m2=m2/np.size(ms)
+m4=m4/np.size(ms)
+binder=1-m4/(3*m2**2)
 for i in range(np.size(energies)):
     energies[i]=(energies[i])/N
-    
+print(binder)    
 plt.figure(3)
 plt.plot(times,energies)
 plt.xlabel('t')
